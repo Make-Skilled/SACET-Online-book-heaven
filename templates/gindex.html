@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 
+    - primary meta tags
+  -->
+  <title>Booken - Get Your New Book Collections</title>
+  <meta name="title" content="Booken - Get Your New Book Collections">
+  <meta name="description" content="This is a Book eCommerce html template made by codewithsadee">
+
+  <!-- 
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href={{ url_for('static', filename='css/style.css' )}}>
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Work+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- 
+    - preload images
+  -->
+  <link rel="preload" as="image" href={{ url_for("static", filename="images/hero-banner.png" )}}>
+  <link rel="preload" as="image" href={{ url_for("static", filename="images/hero-bg.jpg" )}}>
+
+</head>
+
+<body id="top">
+
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+    <div class="header-top">
+      <div class="container">
+
+        <a href="/home" class="logo">
+          <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+        </a>
+
+        <div class="input-wrapper">
+          <form action="/filter" method="get">
+            <input type="text" name="search" placeholder="Enter author,genre or title to filter" style="width: 650px;margin-right: 10px;padding: 6px;outline: white;">
+            <input type="submit" class="btn btn-primary" value="search" style="height: 40px;padding: 10px;width: 120px;margin-bottom: 20px;">
+          </form>
+        
+        </div>
+
+        <div class="header-action">
+
+          <button class="header-action-btn" aria-label="cart" title="Cart">
+            <span class="span">0</span>
+
+            <ion-icon name="bag-handle-outline" aria-hidden="true"></ion-icon>
+          </button>
+
+          <a href="/cart"><button class="nav-open-btn" aria-label="open menu" title="Open Menu" data-nav-toggler>
+            <ion-icon name="menu-outline" aria-hidden="true"></ion-icon></a>
+          </button>
+
+          <button class="header-action-btn" aria-label="user" title="User">
+            <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="header-bottom" data-navbar>
+      <div class="container">
+
+        <nav class="navbar">
+
+          <button class="nav-close-btn" data-nav-toggler aria-label="clsoe menu" title="Clsoe Menu">
+            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+          </button>
+
+          <div class="navbar-top">
+            <input type="search" name="search" placeholder="Search our store" class="input-field">
+
+            <button class="search-btn" aria-label="Search">
+              <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+            </button>
+          </div>
+
+          <ul class="navbar-list">
+
+            <li>
+              <a href="#" class="navbar-link">Home</a>
+            </li>
+
+            <li>
+              <a href="#" class="navbar-link">Blog</a>
+            </li>
+
+            <li>
+              <a href="#" class="navbar-link">Shop</a>
+            </li>
+
+            <li>
+              <a href="#" class="navbar-link">About Us</a>
+            </li>
+
+            <li>
+              <a href="#" class="navbar-link">Contact</a>
+            </li>
+
+          </ul>
+
+        </nav>
+
+        <a href="tel:+0123456789" class="header-contact-link">
+          <ion-icon name="headset-outline" aria-hidden="true"></ion-icon>
+
+          <span class="span">(+91)-9876543210</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+  </header>
+
+
+
+
+
+  <main>
+    <article>
+
+      <!-- 
+        - #HERO
+      -->
+
+      <section class="section hero has-bg-image" aria-label="home"
+        style="background-image: url('./assets/images/hero-bg.jpg')">
+        <div class="container">
+
+          <div class="hero-content">
+
+            <h1 class="h1 hero-title has-after">
+              Get Your New <br>
+              Book Collections
+            </h1>
+
+            <p class="hero-text">
+              There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration
+              in some formr.
+            </p>
+
+            <div class="btn-wrapper">
+
+              <a href="#" class="btn">
+                <span class="span">Explore More</span>
+
+                <ion-icon name="cart" aria-hidden="true"></ion-icon>
+              </a>
+
+              <button class="play-btn" aria-label="play video">
+                <ion-icon name="play-outline" aria-hidden="true"></ion-icon>
+              </button>
+
+            </div>
+
+          </div>
+
+          <figure class="hero-banner">
+            <img src={{ url_for('static', filename='images/hero-banner.png' )}} width="475" height="600"
+              alt="hero banner" class="w-100">
+          </figure>
+
+        </div>
+      </section>
+
+
+
+
+
+      <!-- 
+        - #FEATURE
+      -->
+
+      <section class="section feature" aria-label="feature">
+        <div class="container">
+
+          <div class="grid-list">
+
+            <li>
+              <div class="feature-card">
+
+                <div class="card-icon">
+                  <img src={{ url_for('static', filename="images/feature-1.png" ) }} width="50px">
+                </div>
+
+                <div>
+                  <h3 class="h3 card-title">Free Shipping</h3>
+
+                  <p class="card-text">Order over Rs 100</p>
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="feature-card">
+
+                <div class="card-icon">
+                  <img src={{ url_for( 'static' , filename='images/feature-2.png' )}} width="50px">
+                </div>
+
+                <div>
+                  <h3 class="h3 card-title">Secure Payment</h3>
+
+                  <p class="card-text">100% Secure Payment</p>
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="feature-card">
+
+                <div class="card-icon">
+                  <img src={{ url_for('static', filename="images/feature-3.png" ) }} width="50px">
+                </div>
+
+                <div>
+                  <h3 class="h3 card-title">Best Price</h3>
+
+                  <p class="card-text">Guaranteed Low Cost</p>
+                </div>
+
+              </div>
+            </li>
+
+            <li>
+              <div class="feature-card">
+
+                <div class="card-icon">
+                  <img src={{ url_for('static', filename="images/feature-4.png" ) }} width="50px">
+                </div>
+
+                <div>
+                  <h3 class="h3 card-title">Easy Return</h3>
+
+                  <p class="card-text">Within 30 Days returns</p>
+                </div>
+
+              </div>
+            </li>
+
+          </div>
+
+        </div>
+      </section>
+
+
+
+
+
+
+      <!-- 
+        - #FEATURED COLLECTION
+      -->
+
+
+      <section class="section featured" id="section featured" aria-label="featured collection">
+        <div class="container">
+
+          <h2 class="h2 section-title">Featured Collections</h2>
+
+          <p class="section-text">
+            Contrary to popular belief, Lorem Ipsum is not simply random.
+          </p>
+
+          <div style="width: 800px;height: 400px;margin-left: 60px;">
+            <ul class="grid-list">
+              {% for i in data %}
+              <li>
+                <div class="card" style="width: 18rem;">
+                  <img class="card-img-top" src="/img/{{i['image']}}/{{i['mimetype']}}" alt="Card image cap" style="height: 150px;width: 150px;">
+
+                  <div class="card-body">
+                    <table>
+                      <tr>
+                        <td style="margin: 20px;"><h3><b>Title:</b></h3></td>
+                        <td style="margin: 20px;"><h4 class="card-title">{{i['title']}}</h4></td>
+                      </tr>
+                      <tr>
+                        <td style="margin: 20px;"><h3><b>Author:</b></td>
+                          <td style="margin: 20px;"><h4>{{i['author']}}</h4></td>
+                      </tr>
+                      <tr>
+                        <td style="margin: 20px;"><h3><b>Genre:</b></h3></td>
+                        <td style="margin: 20px;"><h4>{{i['genre']}}</h4></td>
+                      </tr>
+                      <tr>
+                        <td style="margin: 20px;"><h3>Price:</h3></td>
+                        <td style="margin: 20px;"><h4>{{i['price']}}</h4></td>
+                      </tr>
+                    </table>                 
+                   <a href="/addtocart?id={{i['_id']}}" class="btn btn-primary">Add to cart</a>
+                  </div>
+                </div>
+                
+              </li>
+              {% endfor %}
+  
+  
+                </div>
+              </div>
+          </ul>
+  
+          </div>
+        </div>
+      </section>
+
+
+
+
+
+
+      <!-- 
+        - #OFFER
+      -->
+
+      <section class="section offer has-bg-image" aria-label="special offer"
+        style="background-image: url('./assets/images/section-bg.jpg')">
+        <div class="container">
+
+          <p class="section-subtitle">Special Offers</p>
+
+          <h2 class="h2 section-title">All books are 50% off now! Don't miss such a deal!</h2>
+
+          <p class="section-text">
+            You will learn how to animate shapes like circles, lines, and polygons. You'll also learn how to animate CSS
+            properties
+            like color and size.
+          </p>
+
+          <ul class="countdown-list">
+
+            <li>
+              <p class="countdown-time">15</p>
+
+              <p class="countdown-label">Days</p>
+            </li>
+
+            <li>
+              <p class="countdown-time">21</p>
+
+              <p class="countdown-label">Hour</p>
+            </li>
+
+            <li>
+              <p class="countdown-time">18</p>
+
+              <p class="countdown-label">Min</p>
+            </li>
+
+            <li>
+              <p class="countdown-time">14</p>
+
+              <p class="countdown-label">Sec</p>
+            </li>
+
+          </ul>
+
+          <a href="#" class="btn">Explore More</a>
+
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <footer class="footer has-bg-image" style="background-image: url('./assets/images/section-bg.jpg')">
+
+    <div class="footer-top section">
+      <div class="container grid-list">
+
+        <div class="footer-brand">
+
+          <a href="#" class="logo">
+            <img src="./assets/images/logo.svg" width="138" height="28" alt="booken home">
+          </a>
+
+          <p class="footer-text">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit sed do eiusmod tempor inci ut labore et dolore
+            consectetur
+            adipisicing elit sed do eiusmod tempor.
+          </p>
+
+          <ul class="social-list">
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-instagram"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-youtube"></ion-icon>
+              </a>
+            </li>
+
+            <li>
+              <a href="#" class="social-link">
+                <ion-icon name="logo-pinterest"></ion-icon>
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title">Corporate</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Careers</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">About Us</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Contact Us</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">FAQs</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Vendors</a>
+          </li>
+
+        </ul>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title">Information</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Online Store</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Privacy Policy</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Refund Policy</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Shipping Policy</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Terms of Service</a>
+          </li>
+
+        </ul>
+
+        <ul class="footer-list">
+
+          <li>
+            <p class="footer-list-title">Services</p>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Grooming</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Positive Dog Training</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Veterinary Services</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Insurance</a>
+          </li>
+
+          <li>
+            <a href="#" class="footer-link">Book Writing</a>
+          </li>
+
+        </ul>
+
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+
+        <p class="copyright">
+          Copyright 2022 | Made With Love by codewithsadee.
+        </p>
+
+        <img src="./assets/images/payment-mehtod.png" width="311" height="30" loading="lazy" alt="Payment method"
+          class="w-100">
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- 
+    - #BACK TO TOP
+  -->
+
+  <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  </a>
+  <!-- 
+    - custom js link
+  -->
+  <script src={{ url_for('static', filename='js/script.js' )}} defer></script>
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html>

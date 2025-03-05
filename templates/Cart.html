@@ -1,0 +1,139 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href={{url_for('static', filename='css/style2.css')}} rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <style>
+        .card{
+            background-color: #020028;
+            border:1px solid rgb(110, 110, 110);
+            
+        }
+        a{
+            text-decoration: none;
+            color: whitesmoke;
+        }
+        .list-group-item{
+            background-color: #00001E;
+            border:none;
+            border-bottom:1px solid rgb(110, 110, 110);
+            color: white;
+            width: 40%;
+         
+        }
+        .list-group-item:last-child{
+            border-bottom: none;
+        }
+
+        .container-lg{
+            margin-top: 200px;
+        }
+        
+        @media only screen and (max-width: 1500px) {
+                .list-group-item{
+                    width: 100%;
+                }
+            }
+
+    </style>
+  </head>
+             
+    <body background={{url_for('static', filename='section-bg.jpg')}}>
+                <header class="header" data-header>
+                    <div class="header-top">
+                      <div class="container"> 
+                        <a href="#" class="logo">
+                          <img src={{url_for('static', filename='logo.svg')}} width="138" height="28" alt="booken home">
+                        </a>
+                        <div class="header-action">
+                          <button class="nav-open-btn" aria-label="open menu" title="Open Menu" data-nav-toggler>
+                            <ion-icon name="menu-outline" aria-hidden="true">=</ion-icon>
+                          </button>
+                          <button class="header-action-btn btn" aria-label="user" title="User">
+                            <ion-icon name="person-outline" aria-hidden="true">o</ion-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="header-bottom" data-navbar>
+                      <div class="container">
+                        <nav class="navbar">
+                          <button class="nav-close-btn text-light" data-nav-toggler aria-label="clsoe menu" title="Clsoe Menu">
+                            <ion-icon name="close-outline" aria-hidden="true">X</ion-icon>
+                          </button>
+                          <ul class="navbar-list">
+                            <li>
+                              <a href="#" class="navbar-link">Home</a>
+                            </li>
+                            <li>
+                              <a href="" class="navbar-link">Shop</a>
+                            </li>
+                            <li>
+                              <a href="#" class="navbar-link">About Us</a>
+                            </li>
+                            <li>
+                              <a href="#" class="navbar-link">Contact</a>
+                            </li>
+                          </ul>
+                        </nav>
+                      </div>
+                    </div>
+                    <div class="overlay" data-overlay data-nav-toggler></div>
+                  </header>
+        <div class="container-lg">
+            <div class="row justify-content-center m-5">
+                <div class="col-12">
+                    <div class="card text-light ">
+                        <div class="card-header text-center">
+                            <h2>Cart</h2>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="list-group d-flex flex-row flex-wrap justify-content-evenly">
+                                {% for i in data %}
+                                <div class="list-group-item d-flex justify-content-around  align-items-center flex-wrap">
+                                    <div class="div d-flex ">
+                                        <div class="m-2">
+                                            <img src="data:image/jpeg;base64,{{data[i]['image']}}" width="150px" height="200px">
+                                        </div>
+                                        <div class="m-2">
+                                            <h4>{{data[i]['name']}}</h4>
+                                            <p>{{data[i]['author']}}</p>
+                                            <br>
+                                            <p>genre : {{data[i]['genre']}}</p>
+                                            <h5> Rs.{{data[i]['price']}}</h5>
+                                        </div>
+                                    </div>
+                                    <div class="m-2 text-center">
+                                        <div>
+                                            <a href="/addToCart?bookId=1234">
+                                                
+                                            </a>
+                                            {{data[i]['count']}}
+                                            <a href="/addToCart?bookId=1234">
+                                                
+                                            </a> 
+                                        </div>
+                                        <div>
+                                            <h6>Rs.{{ data[i]['count'] * data[i]['price'] }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                              
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-warning w-100 p-2 fw-bold"> {{total}} </button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src={{url_for('static', filename='js/script.js')}}></script>
+    </body>
+</html>
+
