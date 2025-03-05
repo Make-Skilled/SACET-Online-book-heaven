@@ -9,41 +9,64 @@
     <style>
         .card {
             background-color: #020028;
-            border: 1px solid rgb(110, 110, 110);
+            border: 1px solid rgba(255, 215, 0, 0.2);
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
+            height: 100%;
+            position: relative;
+            backdrop-filter: blur(10px);
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 16px rgba(255, 215, 0, 0.1);
+            border-color: rgba(255, 215, 0, 0.4);
         }
         .book-image {
             border-radius: 10px 10px 0 0;
-            height: 300px;
+            height: 200px;
+            width: 100%;
             object-fit: cover;
+            transition: all 0.3s ease;
+        }
+        .book-image:hover {
+            filter: brightness(1.1);
         }
         .container-lg {
-            margin-top: 100px;
+            margin-top: 50px;
             margin-bottom: 50px;
+            padding: 0 30px;
+            width: 100%;
+            max-width: 100%;
+        }
+        .header-top .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0 30px;
         }
         .price-tag {
             color: #ffd700;
-            font-size: 1.2em;
+            font-size: 1.3em;
             font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .category-badge {
-            background-color: rgba(255,215,0,0.1);
+            background-color: rgba(255,215,0,0.15);
             color: #ffd700;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8em;
-            margin-bottom: 10px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-bottom: 12px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
         }
         .filter-section {
             background-color: rgba(255,255,255,0.05);
             border-radius: 10px;
             padding: 20px;
+            margin-left: 0;
+            position: sticky;
+            top: 20px;
         }
         .filter-title {
             color: #ffd700;
@@ -105,6 +128,92 @@
             color: white;
             padding: 10px;
         }
+        .col-md-4 {
+            padding: 10px;
+        }
+        .card-body {
+            padding: 12px;
+        }
+        .card-title {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            color: #fff;
+            font-weight: 600;
+        }
+        .card-text {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.8);
+        }
+        .btn-warning {
+            background-color: #ffd700;
+            border: none;
+            color: #000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn-warning:hover {
+            background-color: #ffed4a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        @media (min-width: 768px) {
+            .col-md-4 {
+                flex: 0 0 25%;
+                max-width: 25%;
+            }
+        }
+        @media (max-width: 767px) {
+            .col-md-4 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+            .book-image {
+                height: 180px;
+            }
+        }
+        @media (max-width: 480px) {
+            .col-md-4 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+        .stock-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .btn-sm {
+            padding: 0.35rem 0.8rem;
+            font-size: 0.8rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            border: none;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .btn-info:hover {
+            background-color: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 <body background={{url_for('static', filename='section-bg.jpg')}}>
@@ -142,10 +251,10 @@
     </header>
 
     <div class="container-lg">
-        <div class="row">
+        <div class="row g-4">
             <!-- Filters Sidebar -->
-            <div class="col-lg-3">
-                <div class="filter-section mb-4">
+            <div class="col-lg-2 col-md-3" style="margin-top: 80px;margin-left: 0px;">
+                <div class="filter-section mb-4" style="margin-left: 0px;">
                     <h4 class="filter-title">Search</h4>
                     <input type="text" class="search-box" id="searchInput" placeholder="Search books...">
                     
@@ -160,14 +269,14 @@
                     {% endfor %}
                     
                     <h4 class="filter-title">Price Range</h4>
-                    <a href="#" class="filter-option price-filter" data-min="0" data-max="500">Under Rs. 500</a>
-                    <a href="#" class="filter-option price-filter" data-min="500" data-max="1000">Rs. 500 - Rs. 1000</a>
-                    <a href="#" class="filter-option price-filter" data-min="1000" data-max="999999">Over Rs. 1000</a>
+                    <a href="#" class="filter-option price-filter" data-min="0" data-max="500">Under ₹500</a>
+                    <a href="#" class="filter-option price-filter" data-min="500" data-max="1000">₹500 - ₹1000</a>
+                    <a href="#" class="filter-option price-filter" data-min="1000" data-max="999999">Over ₹1000</a>
                 </div>
             </div>
 
             <!-- Book Grid -->
-            <div class="col-lg-9">
+            <div class="col-lg-10 col-md-9" style="margin-top: 120px;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="text-light">All Books</h2>
                     <div class="sort-container">
@@ -189,16 +298,22 @@
                          data-category="{{ book.genre }}" 
                          data-price="{{ book.price }}">
                         <div class="card text-light">
-                            <img src="data:{{ book.mimetype }};base64,{{ book.image }}" class="book-image" alt="{{ book.title }}">
+                            <span class="stock-badge">Stock: {{ book.stock }}</span>
+                            <img src="{{ url_for('static', filename='uploads/' + book.image) }}" class="book-image" alt="{{ book.title }}">
                             <div class="card-body">
                                 <span class="category-badge">{{ book.genre }}</span>
                                 <h5 class="card-title">{{ book.title }}</h5>
                                 <p class="card-text">By {{ book.author }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="price-tag">Rs. {{ book.price }}</span>
-                                    <a href="/addtocart?id={{ book._id }}" class="btn btn-warning">
-                                        <i class="bi bi-cart-plus"></i> Add to Cart
-                                    </a>
+                                    <span class="price-tag">₹{{ book.price }}</span>
+                                    <div class="button-group">
+                                        <a href="/static/uploads/{{book.pdf }}" class="btn btn-info btn-sm" target="_blank">
+                                            <i class="bi bi-book"></i> Read
+                                        </a>
+                                        <a href="/addtocart?id={{ book._id }}" class="btn btn-warning btn-sm">
+                                            <i class="bi bi-cart-plus"></i> Cart
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
