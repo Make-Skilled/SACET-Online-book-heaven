@@ -1,0 +1,209 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href={{url_for('static', filename='css/style2.css')}} rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .card {
+            background-color: #020028;
+            border: 1px solid rgb(110, 110, 110);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .container-lg {
+            margin-top: 100px;
+            margin-bottom: 50px;
+        }
+        .about-image {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .feature-icon {
+            font-size: 2.5em;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        .team-member {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 3px solid #ffd700;
+        }
+        .social-links a {
+            color: #ffd700;
+            margin: 0 10px;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+        .social-links a:hover {
+            color: #ffed4a;
+        }
+        .mission-vision {
+            background-color: rgba(255,215,0,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .mission-vision h4 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body background={{url_for('static', filename='section-bg.jpg')}}>
+    <header class="header" data-header>
+        <div class="header-top">
+            <div class="container"> 
+                <a href="/userdashboard" class="logo">
+                    <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+                  </a>
+                <div class="header-action">
+                    <a href="/userdashboard" class="btn btn-outline-light me-2">
+                        <i class="bi bi-house-door"></i> Home
+                    </a>
+                    <a href="/cart" class="btn btn-outline-light me-2">
+                        <i class="bi bi-cart3"></i> Cart
+                    </a>
+                    <a href="/profile" class="btn btn-outline-light me-2">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
+                    <a href="/blog" class="btn btn-outline-light me-2">
+                        <i class="bi bi-book"></i> Blog
+                    </a>
+                    <a href="/shop" class="btn btn-outline-light me-2">
+                        <i class="bi bi-shop"></i> Shop
+                    </a>
+                    <a href="/aboutus" class="btn btn-outline-light me-2">
+                        <i class="bi bi-info-circle"></i> About Us
+                    </a>
+                    <a href="/contact" class="btn btn-outline-light">
+                        <i class="bi bi-envelope"></i> Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-lg">
+        <!-- Hero Section -->
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <h1 class="text-light mb-4">Welcome to Book Heaven</h1>
+                <p class="text-light mb-4">Your one-stop destination for all things books. We're passionate about bringing the best books to our readers and creating a community of book lovers.</p>
+                <p class="text-light">Founded in 2024, we've grown from a small local bookstore to a thriving online platform serving readers worldwide.</p>
+            </div>
+            <div class="col-lg-6">
+                <img src={{url_for('static', filename='images/about-hero.jpg')}} class="img-fluid about-image" alt="About Us">
+            </div>
+        </div>
+
+        <!-- Mission & Vision -->
+        <div class="row mb-5">
+            <div class="col-md-6">
+                <div class="mission-vision">
+                    <h4><i class="bi bi-bullseye"></i> Our Mission</h4>
+                    <p class="text-light">To make quality books accessible to everyone, fostering a love for reading and learning across all age groups and backgrounds.</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mission-vision">
+                    <h4><i class="bi bi-eye"></i> Our Vision</h4>
+                    <p class="text-light">To become the world's leading online bookstore, known for our exceptional service, diverse collection, and commitment to promoting literacy.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="card text-center text-light p-4">
+                    <i class="bi bi-book feature-icon"></i>
+                    <h4>Wide Selection</h4>
+                    <p>Browse through thousands of books across various genres and categories.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center text-light p-4">
+                    <i class="bi bi-truck feature-icon"></i>
+                    <h4>Fast Delivery</h4>
+                    <p>Quick and reliable shipping to get your books to you as soon as possible.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center text-light p-4">
+                    <i class="bi bi-headset feature-icon"></i>
+                    <h4>24/7 Support</h4>
+                    <p>Our customer service team is always here to help you with any queries.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="text-center mb-5">
+            <h2 class="text-light mb-4">Meet Our Team</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="team-member">
+                        <img src={{url_for('static', filename='images/team1.jpg')}} alt="Team Member">
+                        <h4 class="text-light">John Doe</h4>
+                        <p class="text-light">Founder & CEO</p>
+                        <div class="social-links">
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="team-member">
+                        <img src={{url_for('static', filename='images/team2.jpg')}} alt="Team Member">
+                        <h4 class="text-light">Jane Smith</h4>
+                        <p class="text-light">Head of Operations</p>
+                        <div class="social-links">
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="team-member">
+                        <img src={{url_for('static', filename='images/team3.jpg')}} alt="Team Member">
+                        <h4 class="text-light">Mike Johnson</h4>
+                        <p class="text-light">Customer Service Manager</p>
+                        <div class="social-links">
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-twitter"></i></a>
+                            <a href="#"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="text-center">
+            <h2 class="text-light mb-4">Get in Touch</h2>
+            <p class="text-light mb-4">Have questions or suggestions? We'd love to hear from you!</p>
+            <a href="/contact" class="btn btn-warning btn-lg">
+                <i class="bi bi-envelope"></i> Contact Us
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

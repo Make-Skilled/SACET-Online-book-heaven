@@ -1,0 +1,304 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href={{url_for('static', filename='css/style2.css')}} rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .card {
+            background-color: #020028;
+            border: 1px solid rgb(110, 110, 110);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .book-image {
+            border-radius: 10px 10px 0 0;
+            height: 300px;
+            object-fit: cover;
+        }
+        .container-lg {
+            margin-top: 100px;
+            margin-bottom: 50px;
+        }
+        .price-tag {
+            color: #ffd700;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .category-badge {
+            background-color: rgba(255,215,0,0.1);
+            color: #ffd700;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+        .filter-section {
+            background-color: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .filter-title {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+        .filter-option {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 8px 0;
+            transition: color 0.3s ease;
+        }
+        .filter-option:hover {
+            color: #ffd700;
+        }
+        .search-box {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 25px;
+            padding: 10px 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .search-box:focus {
+            background-color: rgba(255,255,255,0.15);
+            border-color: #ffd700;
+            color: white;
+            box-shadow: none;
+        }
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .sort-select {
+            background-color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            border-radius: 10px;
+            padding: 8px 15px;
+            width: 200px;
+            font-size: 1rem;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: calc(100% - 12px) center;
+            padding-right: 35px;
+        }
+        .sort-select:focus {
+            background-color: rgba(255,255,255,0.3);
+            border-color: #ffd700;
+            color: white;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+        }
+        .sort-select option {
+            background-color: #020028;
+            color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body background={{url_for('static', filename='section-bg.jpg')}}>
+    <header class="header" data-header>
+        <div class="header-top">
+            <div class="container"> 
+                <a href="/userdashboard" class="logo">
+                    <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+                  </a>
+                <div class="header-action">
+                    <a href="/userdashboard" class="btn btn-outline-light me-2">
+                        <i class="bi bi-house-door"></i> Home
+                    </a>
+                    <a href="/cart" class="btn btn-outline-light me-2">
+                        <i class="bi bi-cart3"></i> Cart
+                    </a>
+                    <a href="/profile" class="btn btn-outline-light me-2">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
+                    <a href="/blog" class="btn btn-outline-light me-2">
+                        <i class="bi bi-book"></i> Blog
+                    </a>
+                    <a href="/shop" class="btn btn-outline-light me-2">
+                        <i class="bi bi-shop"></i> Shop
+                    </a>
+                    <a href="/aboutus" class="btn btn-outline-light me-2">
+                        <i class="bi bi-info-circle"></i> About Us
+                    </a>
+                    <a href="/contact" class="btn btn-outline-light">
+                        <i class="bi bi-envelope"></i> Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-lg">
+        <div class="row">
+            <!-- Filters Sidebar -->
+            <div class="col-lg-3">
+                <div class="filter-section mb-4">
+                    <h4 class="filter-title">Search</h4>
+                    <input type="text" class="search-box" id="searchInput" placeholder="Search books...">
+                    
+                    <h4 class="filter-title">Categories</h4>
+                    {% for category in categories %}
+                    <a href="#" class="filter-option category-filter" data-category="{{ category }}">{{ category }}</a>
+                    {% endfor %}
+                    
+                    <h4 class="filter-title">Authors</h4>
+                    {% for author in authors %}
+                    <a href="#" class="filter-option author-filter" data-author="{{ author }}">{{ author }}</a>
+                    {% endfor %}
+                    
+                    <h4 class="filter-title">Price Range</h4>
+                    <a href="#" class="filter-option price-filter" data-min="0" data-max="500">Under Rs. 500</a>
+                    <a href="#" class="filter-option price-filter" data-min="500" data-max="1000">Rs. 500 - Rs. 1000</a>
+                    <a href="#" class="filter-option price-filter" data-min="1000" data-max="999999">Over Rs. 1000</a>
+                </div>
+            </div>
+
+            <!-- Book Grid -->
+            <div class="col-lg-9">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-light">All Books</h2>
+                    <div class="sort-container">
+                        <select class="sort-select" id="sortSelect">
+                            <option value="" disabled selected>Sort by</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="title">Title: A to Z</option>
+                            <option value="author">Author: A to Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" id="bookGrid">
+                    {% for book in books %}
+                    <div class="col-md-4 mb-4 book-card" 
+                         data-title="{{ book.title }}" 
+                         data-author="{{ book.author }}" 
+                         data-category="{{ book.genre }}" 
+                         data-price="{{ book.price }}">
+                        <div class="card text-light">
+                            <img src="data:{{ book.mimetype }};base64,{{ book.image }}" class="book-image" alt="{{ book.title }}">
+                            <div class="card-body">
+                                <span class="category-badge">{{ book.genre }}</span>
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">By {{ book.author }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="price-tag">Rs. {{ book.price }}</span>
+                                    <a href="/addtocart?id={{ book._id }}" class="btn btn-warning">
+                                        <i class="bi bi-cart-plus"></i> Add to Cart
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Search and filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const bookCards = document.querySelectorAll('.book-card');
+        
+        function filterBooks() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeCategory = document.querySelector('.category-filter.active')?.dataset.category;
+            const activeAuthor = document.querySelector('.author-filter.active')?.dataset.author;
+            const activePriceFilter = document.querySelector('.price-filter.active');
+            
+            bookCards.forEach(card => {
+                const title = card.dataset.title.toLowerCase();
+                const author = card.dataset.author;
+                const category = card.dataset.category;
+                const price = parseFloat(card.dataset.price);
+                
+                let show = title.includes(searchTerm);
+                
+                if (show && activeCategory) {
+                    show = category === activeCategory;
+                }
+                if (show && activeAuthor) {
+                    show = author === activeAuthor;
+                }
+                if (show && activePriceFilter) {
+                    const minPrice = parseFloat(activePriceFilter.dataset.min);
+                    const maxPrice = parseFloat(activePriceFilter.dataset.max);
+                    show = price >= minPrice && price <= maxPrice;
+                }
+                
+                card.style.display = show ? '' : 'none';
+            });
+        }
+        
+        function sortBooks() {
+            const sortValue = sortSelect.value;
+            const bookGrid = document.getElementById('bookGrid');
+            const cardsArray = Array.from(bookCards);
+            
+            cardsArray.sort((a, b) => {
+                switch(sortValue) {
+                    case 'price-low':
+                        return parseFloat(a.dataset.price) - parseFloat(b.dataset.price);
+                    case 'price-high':
+                        return parseFloat(b.dataset.price) - parseFloat(a.dataset.price);
+                    case 'title':
+                        return a.dataset.title.localeCompare(b.dataset.title);
+                    case 'author':
+                        return a.dataset.author.localeCompare(b.dataset.author);
+                    default:
+                        return 0;
+                }
+            });
+            
+            cardsArray.forEach(card => bookGrid.appendChild(card));
+        }
+        
+        // Event listeners
+        searchInput.addEventListener('input', filterBooks);
+        sortSelect.addEventListener('change', sortBooks);
+        
+        document.querySelectorAll('.category-filter').forEach(filter => {
+            filter.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.category-filter').forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                filterBooks();
+            });
+        });
+        
+        document.querySelectorAll('.author-filter').forEach(filter => {
+            filter.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.author-filter').forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                filterBooks();
+            });
+        });
+        
+        document.querySelectorAll('.price-filter').forEach(filter => {
+            filter.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.price-filter').forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+                filterBooks();
+            });
+        });
+    </script>
+</body>
+</html>

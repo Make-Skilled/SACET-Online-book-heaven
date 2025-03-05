@@ -104,19 +104,19 @@
           <ul class="navbar-list">
 
             <li>
-              <a href="#" class="navbar-link">Home</a>
+              <a href="/userdashboard" class="navbar-link">Home</a>
             </li>
 
             <li>
-              <a href="#" class="navbar-link">Blog</a>
+              <a href="/blog" class="navbar-link">Blog</a>
             </li>
 
             <li>
-              <a href="section featured" class="navbar-link">Shop</a>
+              <a href="/shop" class="navbar-link">Shop</a>
             </li>
 
             <li>
-              <a href="#" class="navbar-link">About Us</a>
+              <a href="/aboutus" class="navbar-link">About Us</a>
             </li>
 
             <li>
@@ -172,7 +172,7 @@
 
             <div class="btn-wrapper">
 
-              <a href="#" class="btn">
+              <a href="/shop" class="btn">
                 <span class="span">Explore More</span>
 
                 <ion-icon name="cart" aria-hidden="true"></ion-icon>
@@ -277,73 +277,6 @@
       </section>
 
 
-
-
-
-
-      <!-- 
-        - #FEATURED COLLECTION
-      -->
-
-      <section class="section featured" id="section featured" aria-label="featured collection">
-        <div class="container">
-
-          <h2 class="h2 section-title">Featured Collections</h2>
-
-          <p class="section-text">
-            Contrary to popular belief, Lorem Ipsum is not simply random.
-          </p>
-
-          <div style="width: 800px;height: 400px;margin-left: 60px;">
-            <ul class="grid-list">
-              {% for i in data %}
-              <li>
-                <div class="card" style="width: 18rem;">
-                  <img class="card-img-top" src="/img/{{i['image']}}/{{i['mimetype']}}" alt="Card image cap" style="height: 150px;width: 170px;border-radius: 20px;">
-
-                  <div class="card-body" style="padding: 10px;margin-top: 10px;">
-                    <table>
-                      <tr>
-                        <td style="margin: 20px;"><h3><b>Title:</b></h3></td>
-                        <td style="margin: 20px;"><h4 class="card-title">{{i['title']}}</h4></td>
-                      </tr>
-                      <tr>
-                        <td style="margin: 20px;"><h3><b>Author:</b></td>
-                          <td style="margin: 20px;"><h4>{{i['author']}}</h4></td>
-                      </tr>
-                      <tr>
-                        <td style="margin: 20px;"><h3><b>Genre:</b></h3></td>
-                        <td style="margin: 20px;"><h4>{{i['genre']}}</h4></td>
-                      </tr>
-                      <tr>
-                        <td style="margin: 20px;"><h3>Price:</h3></td>
-                        <td style="margin: 20px;"><h4>{{i['price']}}</h4></td>
-                      </tr>
-                    </table>                 
-                   <a href="/addtocart?id={{i['_id']}}" class="btn btn-primary">Add to cart</a>
-                  </div>
-                </div>
-                
-              </li>
-              {% endfor %}
-  
-  
-                </div>
-              </div>
-          </ul>
-  
-          </div>
-        </div>
-      </section>
-
-
-
-
-
-      <!-- 
-        - #OFFER
-      -->
-
       <section class="section offer has-bg-image" aria-label="special offer"
         style="background-image: url('./assets/images/section-bg.jpg')">
         <div class="container">
@@ -386,7 +319,7 @@
 
           </ul>
 
-          <a href="#" class="btn">Explore More</a>
+          <a href="/shop" class="btn">Explore More</a>
 
         </div>
       </section>

@@ -1,139 +1,196 @@
 <!doctype html>
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href={{url_for('static', filename='css/style2.css')}} rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
-        .card{
+        .card {
             background-color: #020028;
-            border:1px solid rgb(110, 110, 110);
-            
+            border: 1px solid rgb(110, 110, 110);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        a{
+        a {
             text-decoration: none;
             color: whitesmoke;
         }
-        .list-group-item{
+        .cart-item {
             background-color: #00001E;
-            border:none;
-            border-bottom:1px solid rgb(110, 110, 110);
+            border: none;
+            border-bottom: 1px solid rgb(110, 110, 110);
             color: white;
-            width: 40%;
-         
+            margin-bottom: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
         }
-        .list-group-item:last-child{
-            border-bottom: none;
+        .cart-item:hover {
+            background-color: #1a1a4d;
+            transform: translateY(-2px);
         }
-
-        .container-lg{
-            margin-top: 200px;
+        .container-lg {
+            margin-top: 100px;
+            margin-bottom: 50px;
         }
-        
-        @media only screen and (max-width: 1500px) {
-                .list-group-item{
-                    width: 100%;
-                }
-            }
-
+        .book-image {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .quantity-controls a {
+            color: #ffd700;
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+        .quantity-controls a:hover {
+            color: #ffed4a;
+        }
+        .remove-btn {
+            color: #ff4444;
+            transition: color 0.3s ease;
+        }
+        .remove-btn:hover {
+            color: #ff0000;
+        }
+        .checkout-btn {
+            background-color: #ffd700;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .checkout-btn:hover {
+            background-color: #ffed4a;
+            transform: translateY(-2px);
+        }
+        .empty-cart {
+            text-align: center;
+            padding: 50px;
+            color: white;
+        }
+        .empty-cart i {
+            font-size: 4em;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
     </style>
-  </head>
-             
-    <body background={{url_for('static', filename='section-bg.jpg')}}>
-                <header class="header" data-header>
-                    <div class="header-top">
-                      <div class="container"> 
-                        <a href="#" class="logo">
-                          <img src={{url_for('static', filename='logo.svg')}} width="138" height="28" alt="booken home">
-                        </a>
-                        <div class="header-action">
-                          <button class="nav-open-btn" aria-label="open menu" title="Open Menu" data-nav-toggler>
-                            <ion-icon name="menu-outline" aria-hidden="true">=</ion-icon>
-                          </button>
-                          <button class="header-action-btn btn" aria-label="user" title="User">
-                            <ion-icon name="person-outline" aria-hidden="true">o</ion-icon>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="header-bottom" data-navbar>
-                      <div class="container">
-                        <nav class="navbar">
-                          <button class="nav-close-btn text-light" data-nav-toggler aria-label="clsoe menu" title="Clsoe Menu">
-                            <ion-icon name="close-outline" aria-hidden="true">X</ion-icon>
-                          </button>
-                          <ul class="navbar-list">
-                            <li>
-                              <a href="#" class="navbar-link">Home</a>
-                            </li>
-                            <li>
-                              <a href="" class="navbar-link">Shop</a>
-                            </li>
-                            <li>
-                              <a href="#" class="navbar-link">About Us</a>
-                            </li>
-                            <li>
-                              <a href="#" class="navbar-link">Contact</a>
-                            </li>
-                          </ul>
-                        </nav>
-                      </div>
-                    </div>
-                    <div class="overlay" data-overlay data-nav-toggler></div>
-                  </header>
-        <div class="container-lg">
-            <div class="row justify-content-center m-5">
-                <div class="col-12">
-                    <div class="card text-light ">
-                        <div class="card-header text-center">
-                            <h2>Cart</h2>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="list-group d-flex flex-row flex-wrap justify-content-evenly">
-                                {% for i in data %}
-                                <div class="list-group-item d-flex justify-content-around  align-items-center flex-wrap">
-                                    <div class="div d-flex ">
-                                        <div class="m-2">
-                                            <img src="data:image/jpeg;base64,{{data[i]['image']}}" width="150px" height="200px">
-                                        </div>
-                                        <div class="m-2">
-                                            <h4>{{data[i]['name']}}</h4>
-                                            <p>{{data[i]['author']}}</p>
-                                            <br>
-                                            <p>genre : {{data[i]['genre']}}</p>
-                                            <h5> Rs.{{data[i]['price']}}</h5>
-                                        </div>
-                                    </div>
-                                    <div class="m-2 text-center">
-                                        <div>
-                                            <a href="/addToCart?bookId=1234">
-                                                
-                                            </a>
-                                            {{data[i]['count']}}
-                                            <a href="/addToCart?bookId=1234">
-                                                
-                                            </a> 
-                                        </div>
-                                        <div>
-                                            <h6>Rs.{{ data[i]['count'] * data[i]['price'] }}</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                              
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-warning w-100 p-2 fw-bold"> {{total}} </button>
-                        </div>
-                    </div>
+</head>
+<body background={{url_for('static', filename='section-bg.jpg')}}>
+    <header class="header" data-header>
+        <div class="header-top">
+            <div class="container"> 
+                <a href="/userdashboard" class="logo">
+                    <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+                  </a>
+                <div class="header-action">
+                    <a href="/userdashboard" class="btn btn-outline-light me-2">
+                        <i class="bi bi-house-door"></i> Home
+                    </a>
+                    <a href="/profile" class="btn btn-outline-light">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
                 </div>
-                
             </div>
         </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    <script src={{url_for('static', filename='js/script.js')}}></script>
-    </body>
-</html>
+    </header>
 
+    <div class="container-lg">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card text-light">
+                    <div class="card-header text-center py-4">
+                        <h2><i class="bi bi-cart3"></i> Shopping Cart</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if data %}
+                            {% for id, item in data.items() %}
+                            <div class="cart-item p-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3">
+                                        <img src="/img/{{item['image']}}/{{item['mimetype']}}" 
+                                             class="book-image img-fluid" 
+                                             alt="{{item['title']}}"
+                                             style="max-height: 200px;">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h4 class="mb-2">{{item['title']}}</h4>
+                                        <p class="mb-1">Author: {{item['author']}}</p>
+                                        <p class="mb-1">Genre: {{item['genre']}}</p>
+                                        <p class="mb-1">Price: Rs.{{item['price']}}</p>
+                                        <p class="mb-0">Subtotal: Rs.{{item['subtotal']}}</p>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <div class="quantity-controls mb-2">
+                                            <a href="#" onclick="updateCart('{{id}}', 'decrease')">
+                                                <i class="bi bi-dash-circle"></i>
+                                            </a>
+                                            <span class="mx-2">{{item['count']}}</span>
+                                            <a href="#" onclick="updateCart('{{id}}', 'increase')">
+                                                <i class="bi bi-plus-circle"></i>
+                                            </a>
+                                        </div>
+                                        <a href="#" onclick="updateCart('{{id}}', 'remove')" class="remove-btn">
+                                            <i class="bi bi-trash"></i> Remove
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            
+                            <div class="text-center mt-4">
+                                <h3 class="mb-4">Total: Rs.{{total}}</h3>
+                                <a href="/checkout" class="checkout-btn">
+                                    <i class="bi bi-cart-check"></i> Proceed to Checkout
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="empty-cart">
+                                <i class="bi bi-cart-x"></i>
+                                <h3>Your cart is empty</h3>
+                                <p>Looks like you haven't added any books to your cart yet.</p>
+                                <a href="/userdashboard" class="btn btn-warning mt-3">
+                                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateCart(bookId, action) {
+            fetch('/update_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `book_id=${bookId}&action=${action}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating the cart');
+            });
+        }
+    </script>
+</body>
+</html>

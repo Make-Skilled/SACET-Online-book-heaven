@@ -1,0 +1,196 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href={{url_for('static', filename='css/style2.css')}} rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .card {
+            background-color: #020028;
+            border: 1px solid rgb(110, 110, 110);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .blog-image {
+            border-radius: 10px 10px 0 0;
+            height: 200px;
+            object-fit: cover;
+        }
+        .container-lg {
+            margin-top: 100px;
+            margin-bottom: 50px;
+        }
+        .blog-category {
+            color: #ffd700;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .blog-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+        .read-more {
+            color: #ffd700;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .read-more:hover {
+            color: #ffed4a;
+        }
+        .search-box {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 25px;
+            padding: 10px 20px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .search-box:focus {
+            background-color: rgba(255,255,255,0.15);
+            border-color: #ffd700;
+            color: white;
+            box-shadow: none;
+        }
+        .search-box::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body background={{url_for('static', filename='section-bg.jpg')}}>
+    <header class="header" data-header>
+        <div class="header-top">
+            <div class="container"> 
+                <a href="/userdashboard" class="logo">
+                    <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+                  </a>
+                <div class="header-action">
+                    <a href="/userdashboard" class="btn btn-outline-light me-2">
+                        <i class="bi bi-house-door"></i> Home
+                    </a>
+                    <a href="/cart" class="btn btn-outline-light me-2">
+                        <i class="bi bi-cart3"></i> Cart
+                    </a>
+                    <a href="/profile" class="btn btn-outline-light me-2">
+                        <i class="bi bi-person"></i> Profile
+                    </a>
+                    <a href="/blog" class="btn btn-outline-light me-2">
+                        <i class="bi bi-book"></i> Blog
+                    </a>
+                    <a href="/shop" class="btn btn-outline-light me-2">
+                        <i class="bi bi-shop"></i> Shop
+                    </a>
+                    <a href="/aboutus" class="btn btn-outline-light me-2">
+                        <i class="bi bi-info-circle"></i> About Us
+                    </a>
+                    <a href="/contact" class="btn btn-outline-light">
+                        <i class="bi bi-envelope"></i> Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-lg">
+        <div class="row">
+            <!-- Blog Posts -->
+            <div class="col-lg-8">
+                <h2 class="text-light mb-4">Latest Blog Posts</h2>
+                
+                <!-- Blog Post 1 -->
+                <div class="card text-light mb-4">
+                    <img src={{url_for('static', filename='images/blog1.jpg')}} class="blog-image" alt="Blog Post">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="blog-category">Book Reviews</span>
+                            <span class="blog-date">March 15, 2024</span>
+                        </div>
+                        <h4 class="card-title">The Art of Reading: A Comprehensive Guide</h4>
+                        <p class="card-text">Discover the secrets to becoming a more effective reader and how to get the most out of your reading experience.</p>
+                        <a href="#" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Blog Post 2 -->
+                <div class="card text-light mb-4">
+                    <img src={{url_for('static', filename='images/blog2.jpg')}} class="blog-image" alt="Blog Post">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="blog-category">Reading Tips</span>
+                            <span class="blog-date">March 10, 2024</span>
+                        </div>
+                        <h4 class="card-title">Building Your Personal Library: A Beginner's Guide</h4>
+                        <p class="card-text">Learn how to start and organize your personal book collection, from choosing the right books to proper storage.</p>
+                        <a href="#" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Blog Post 3 -->
+                <div class="card text-light">
+                    <img src={{url_for('static', filename='images/blog3.jpg')}} class="blog-image" alt="Blog Post">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="blog-category">Literary Events</span>
+                            <span class="blog-date">March 5, 2024</span>
+                        </div>
+                        <h4 class="card-title">Upcoming Book Releases to Watch For</h4>
+                        <p class="card-text">Stay updated with the most anticipated book releases of the year and why they're worth adding to your reading list.</p>
+                        <a href="#" class="read-more">Read More <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="card text-light p-3 mb-4">
+                    <h4 class="mb-3">Search</h4>
+                    <input type="text" class="search-box" placeholder="Search blog posts...">
+                </div>
+
+                <div class="card text-light p-3 mb-4">
+                    <h4 class="mb-3">Categories</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Book Reviews</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Reading Tips</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Literary Events</a></li>
+                        <li class="mb-2"><a href="#" class="text-light text-decoration-none">Author Interviews</a></li>
+                    </ul>
+                </div>
+
+                <div class="card text-light p-3">
+                    <h4 class="mb-3">Popular Posts</h4>
+                    <div class="mb-3">
+                        <a href="#" class="text-light text-decoration-none">
+                            <h6 class="mb-1">The Benefits of Reading Before Bed</h6>
+                            <small class="text-muted">March 1, 2024</small>
+                        </a>
+                    </div>
+                    <div class="mb-3">
+                        <a href="#" class="text-light text-decoration-none">
+                            <h6 class="mb-1">How to Choose Your Next Book</h6>
+                            <small class="text-muted">February 28, 2024</small>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="#" class="text-light text-decoration-none">
+                            <h6 class="mb-1">Creating a Reading Habit</h6>
+                            <small class="text-muted">February 25, 2024</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

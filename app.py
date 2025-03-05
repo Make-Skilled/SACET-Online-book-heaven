@@ -1,6 +1,6 @@
 import base64
 from pymongo import MongoClient
-from flask import Flask,render_template,session,request,redirect,send_file,url_for
+from flask import Flask,render_template,session,request,redirect,send_file,url_for, flash
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
 import os;
@@ -110,18 +110,119 @@ def userdashboard():
     else:
         count = 0
     
-    data = stock.find()
-    return render_template('index.html', data=data, count=count)
-
+    # Get all books from stock
+    data = list(stock.find())
+    
+    # Featured books (get from database if possible)
+    featured_books = []
+    for book in data:
+        if len(featured_books) < 4:  # Limit to 4 featured books
+            featured_books.append({
+                'title': book['title'],
+                'author': book['author'],
+                'genre': book['genre'],
+                'price': book['price'],
+                'image': book['image'],
+                'mimetype': book['mimetype'],
+                'description': book.get('description', 'A captivating book that will keep you engaged from start to finish.'),
+                '_id': book['_id']
+            })
+    
+    return render_template('index.html', data=data, count=count, featured_books=featured_books)
 
 @app.route('/cart')
 def cart():
-    data=books.find_one({"username":session['name']})
-    result=dict(data)['cart']
-    result=dict(result)
-    print("result is")
-    print(result)
-    return render_template('Cart.html',data=result)
+    if 'name' not in session:
+        return redirect(url_for('login'))
+        
+    user_data = books.find_one({"username": session['name']})
+    if not user_data:
+        return redirect(url_for('login'))
+        
+    cart_items = user_data.get('cart', [])
+    
+    # Calculate total and organize cart items
+    total = 0
+    organized_cart = {}
+    
+    for item in cart_items:
+        item_id = str(item['_id'])
+        if item_id in organized_cart:
+            organized_cart[item_id]['count'] += 1
+            organized_cart[item_id]['subtotal'] = organized_cart[item_id]['count'] * item['price']
+        else:
+            organized_cart[item_id] = {
+                'title': item['title'],
+                'author': item['author'],
+                'genre': item['genre'],
+                'price': item['price'],
+                'image': item['image'],
+                'mimetype': item['mimetype'],
+                'count': 1,
+                'subtotal': item['price']
+            }
+        total += item['price']
+    
+    return render_template('Cart.html', data=organized_cart, total=total)
+
+@app.route('/update_cart', methods=['POST'])
+def update_cart():
+    if 'name' not in session:
+        return {'success': False, 'message': 'Please login first'}
+        
+    book_id = request.form.get('book_id')
+    action = request.form.get('action')
+    
+    if not book_id or not action:
+        return {'success': False, 'message': 'Invalid request'}
+        
+    user_data = books.find_one({"username": session['name']})
+    if not user_data:
+        return {'success': False, 'message': 'User not found'}
+        
+    cart_items = user_data.get('cart', [])
+    
+    if action == 'remove':
+        # Remove all instances of the book
+        cart_items = [item for item in cart_items if str(item['_id']) != book_id]
+    elif action == 'increase':
+        # Add one more instance
+        book = stock.find_one({"_id": ObjectId(book_id)})
+        if book:
+            cart_items.append(book)
+    elif action == 'decrease':
+        # Remove one instance
+        found = False
+        for i, item in enumerate(cart_items):
+            if str(item['_id']) == book_id:
+                cart_items.pop(i)
+                found = True
+                break
+    
+    # Update user's cart
+    books.update_one(
+        {"username": session['name']},
+        {"$set": {"cart": cart_items}}
+    )
+    
+    return {'success': True, 'message': 'Cart updated successfully'}
+
+@app.route('/checkout')
+def checkout():
+    if 'name' not in session:
+        return redirect(url_for('login'))
+        
+    user_data = books.find_one({"username": session['name']})
+    if not user_data:
+        return redirect(url_for('login'))
+        
+    # Clear the cart after successful checkout
+    books.update_one(
+        {"username": session['name']},
+        {"$set": {"cart": []}}
+    )
+    
+    return render_template('Checkout.html')
 
 @app.route('/profile')
 def profile():
@@ -237,6 +338,50 @@ def load(name,mimetype):
             as_attachment=True,
             download_name=name
         )
+
+@app.route('/blog')
+def blog():
+    return render_template('blog.html')
+
+@app.route('/shop')
+def shop():
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    
+    # Get user's cart count
+    user = session['name']
+    res1 = books.find_one({"username": user})
+    count = len(list(res1.get('cart', []))) if res1 else 0
+    
+    # Get all books from stock
+    all_books = list(stock.find())
+    
+    # Get unique categories and authors for filters
+    categories = list(set(book['genre'] for book in all_books))
+    authors = list(set(book['author'] for book in all_books))
+    
+    return render_template('shop.html', books=all_books, categories=categories, authors=authors, count=count)
+
+@app.route('/aboutus')
+def aboutus():
+    return render_template('aboutus.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/send_message', methods=['POST'])
+def send_message():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        subject = request.form.get('subject')
+        message = request.form.get('message')
+        
+        # Here you would typically save the message to a database
+        # For now, we'll just redirect with a success message
+        flash('Thank you for your message! We will get back to you soon.', 'success')
+        return redirect(url_for('contact'))
 
 if __name__=="__main__":
     app.run(debug=True)

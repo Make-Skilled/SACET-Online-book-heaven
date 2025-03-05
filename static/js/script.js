@@ -1,82 +1,42 @@
-'use strict';
-
-
-
-/**
- * add event on elements
- */
-
-const addEventOnElem = function (elem, type, callback) {
-  if (elem.length > 1) {
-    for (let i = 0; i < elem.length; i++) {
-      elem[i].addEventListener(type, callback);
-    }
-  } else {
-    elem.addEventListener(type, callback);
-  }
+// Function to handle adding items to the cart
+function addToCart(bookId, action) {
+    // Logic to add item to cart
+    const url = `/addToCart?bookId=${bookId}&action=${action}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Update the cart UI based on the response
+            console.log(data);
+            location.reload(); // Reload the page to reflect changes
+        })
+        .catch(error => console.error('Error:', error));
 }
 
-
-
-/**
- * navbar toogle
- */
-
-const navbar = document.querySelector("[data-navbar]");
-const navTogglers = document.querySelectorAll("[data-nav-toggler]");
-const overlay = document.querySelector("[data-overlay]");
-
-const toggleNavbar = function () {
-  navbar.classList.toggle("active");
-  overlay.classList.toggle("active");
+// Function to handle removing items from the cart
+function removeFromCart(bookId) {
+    const url = `/removeFromCart?bookId=${bookId}`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Update the cart UI based on the response
+            console.log(data);
+            location.reload(); // Reload the page to reflect changes
+        })
+        .catch(error => console.error('Error:', error));
 }
 
-addEventOnElem(navTogglers, "click", toggleNavbar);
+// Attach event listeners to buttons
+document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function() {
+        const bookId = this.dataset.bookId;
+        const action = this.dataset.action;
+        addToCart(bookId, action);
+    });
+});
 
-
-
-/**
- * active header & back top btn when window scroll down to 100px
- */
-
-const header = document.querySelector("[data-header]");
-const backTopBtn = document.querySelector("[data-back-top-btn]");
-
-const activeElemOnScroll = function () {
-  if (window.scrollY > 100) {
-    header.classList.add("active");
-    backTopBtn.classList.add("active");
-  } else {
-    header.classList.remove("active");
-    backTopBtn.classList.remove("active");
-  }
-}
-
-addEventOnElem(window, "scroll", activeElemOnScroll);
-
-
-
-/**
- * filter functionality
- */
-
-const filterBtn = document.querySelectorAll("[data-filter-btn]");
-const filterItems = document.querySelectorAll("[data-filter]");
-
-let lastClickedBtn = filterBtn[0];
-
-const filter = function () {
-  lastClickedBtn.classList.remove("active");
-  this.classList.add("active");
-  lastClickedBtn = this;
-
-  for (let i = 0; i < filterItems.length; i++) {
-    if (filterItems[i].dataset.filter === this.dataset.filterBtn) {
-      filterItems[i].style.display = "block";
-    } else {
-      filterItems[i].style.display = "none";
-    }
-  }
-}
-
-addEventOnElem(filterBtn, "click", filter);
+document.querySelectorAll('.remove-from-cart').forEach(button => {
+    button.addEventListener('click', function() {
+        const bookId = this.dataset.bookId;
+        removeFromCart(bookId);
+    });
+});
