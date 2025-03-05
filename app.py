@@ -6,11 +6,13 @@ from werkzeug.utils import secure_filename
 import os;
 import io
 import datetime
+from datetime import datetime
 
 database=MongoClient("mongodb+srv://kr4785543:1234567890@cluster0.220yz.mongodb.net/")
 users=database['users']
 books=users['books'] 
 stock=users['stock']
+orders=users['orders']
  
 app=Flask(__name__)
 
@@ -34,13 +36,19 @@ def register():
     mail=request.form['mail']
     password=request.form['password']
     confirmpass=request.form['confirmpass']
-    k={}
-    k['username']=username
-    k['phone']=phone
-    k['mail']=mail
-    k['password']=password
-    k['confirmpass']=confirmpass  
-    k['cart']=[]
+    if(password!=confirmpass):
+        return render_template('register.html',res='Passwords do not match')
+    # Create user document with required structure
+    k = {
+        "username": username,
+        "phone": phone,
+        "mail": mail,
+        "password": password,
+        "address": None,
+        "profile_picture": None,
+        "cart": []
+    }
+    
     res=books.find()
     for data in res:
         x=dict(data)
@@ -215,7 +223,14 @@ def checkout():
 
 @app.route('/profile')
 def profile():
-    return render_template('Profile.html')
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    
+    user = books.find_one({"username": session['name']})
+    if not user:
+        return redirect(url_for('login'))
+    
+    return render_template('Profile.html', user=user)
 
 @app.route('/sortbyauthor')
 def sortbyauthor():
@@ -259,7 +274,7 @@ def book():
         os.makedirs(upload_folder)
     
     # Generate timestamped filenames
-    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     image_filename = f"{timestamp}_img_{secure_filename(image_file.filename)}"
     pdf_filename = f"{timestamp}_pdf_{secure_filename(pdf_file.filename)}"
     
@@ -316,6 +331,7 @@ def filter():
         x=dict(i)
         if x['author']==filter:
             data=stock.find({'author':i['author']})
+            
             return render_template('aindex.html',data)
         elif x['genre']==filter:
             data=stock.find({"genre":filter})
@@ -463,7 +479,7 @@ def editbook(book_id):
             image_file = request.files['image']
             if image_file.filename:
                 # Generate timestamped filename
-                timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 image_filename = f"{timestamp}_img_{secure_filename(image_file.filename)}"
                 
                 # Create static/uploads directory if it doesn't exist
@@ -493,7 +509,7 @@ def editbook(book_id):
             pdf_file = request.files['pdf']
             if pdf_file.filename:
                 # Generate timestamped filename
-                timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 pdf_filename = f"{timestamp}_pdf_{secure_filename(pdf_file.filename)}"
                 
                 # Save file with secure filename
@@ -539,5 +555,219 @@ def deletebook(book_id):
     
     return redirect(url_for('allbooks'))
 
+@app.route('/myorders')
+def myorders():
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    
+    user = session['name']
+    print("Current user:", user)  # Debug print
+    user_orders = list(orders.find({"user": user}).sort("order_date", -1))
+    print("Found orders:", len(user_orders))  # Debug print
+    for order in user_orders:  # Debug print
+        print("Order:", order['_id'], "Date:", order['order_date'], "Status:", order['status'])
+    return render_template('myorders.html', user_orders=user_orders)
+
+@app.route('/create_order', methods=['POST'])
+def create_order():
+    if 'name' not in session:
+        return {'success': False, 'message': 'Please login first'}
+    
+    user = session['name']
+    user_data = books.find_one({"username": user})
+    if not user_data:
+        return {'success': False, 'message': 'User not found'}
+    
+    cart_items = user_data.get('cart', [])
+    if not cart_items:
+        return {'success': False, 'message': 'Cart is empty'}
+    
+    # Calculate total and organize cart items
+    total = 0
+    order_items = []
+    
+    for item in cart_items:
+        item_id = str(item['_id'])
+        # Check if item already exists in order_items
+        existing_item = next((x for x in order_items if str(x['book_id']) == item_id), None)
+        if existing_item:
+            existing_item['quantity'] += 1
+            existing_item['subtotal'] = existing_item['quantity'] * existing_item['price']
+        else:
+            order_items.append({
+                'book_id': ObjectId(item_id),
+                'title': item['title'],
+                'author': item['author'],
+                'genre': item['genre'],
+                'price': item['price'],
+                'quantity': 1,
+                'subtotal': item['price']
+            })
+        total += item['price']
+    
+    # Create order document with items as a list
+    order = {
+        'user': user,
+        'user_details': {
+            'username': user_data['username'],
+            'email': user_data['mail'],
+            'phone': user_data.get('phone', ''),
+            'address': user_data.get('address', '')
+        },
+        'order_items': order_items,
+        'total_amount': total,
+        'status': 'pending',
+        'payment_status': 0,  # 0 for unpaid, 1 for paid
+        'order_date': datetime.now(),
+        'shipping_address': user_data.get('address', ''),
+        'contact': user_data.get('phone', '')
+    }
+    
+    # Insert order into orders collection
+    orders.insert_one(order)
+    
+    # Clear user's cart
+    books.update_one(
+        {"username": user},
+        {"$set": {"cart": []}}
+    )
+    
+    # Update book stock
+    for item in order_items:
+        stock.update_one(
+            {"_id": item['book_id']},
+            {"$inc": {"stock": -item['quantity']}}
+        )
+    
+    return {'success': True, 'redirect': True}
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    
+    user = books.find_one({"username": session['name']})
+    if not user:
+        return redirect(url_for('login'))
+    
+    if request.method == 'POST':
+        # Handle profile picture upload
+        profile_picture = None
+        if 'profile_picture' in request.files:
+            file = request.files['profile_picture']
+            if file and file.filename:
+                # Create uploads directory if it doesn't exist
+                upload_folder = os.path.join('static', 'uploads')
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder)
+                
+                # Generate timestamped filename
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f"{timestamp}_profile_{secure_filename(file.filename)}"
+                file_path = os.path.join(upload_folder, filename)
+                file.save(file_path)
+                profile_picture = filename
+                
+                # Delete old profile picture if exists
+                if user.get('profile_picture'):
+                    try:
+                        old_path = os.path.join(upload_folder, user['profile_picture'])
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                    except:
+                        pass
+        
+        # Update user data
+        update_data = {
+            "phone": request.form.get('phone'),
+            "address": request.form.get('address')
+        }
+        
+        # Only update profile picture if a new one was uploaded
+        if profile_picture:
+            update_data['profile_picture'] = profile_picture
+        
+        books.update_one(
+            {"username": session['name']},
+            {"$set": update_data}
+        )
+        
+        return redirect(url_for('profile'))
+    
+    return render_template('edit_profile.html', user=user)
+
+@app.route('/allorders')
+def allorders():
+    if 'name' not in session or session['name'] != 'admin':
+        return redirect(url_for('admin'))
+    
+    # Get all orders sorted by date (newest first)
+    all_orders = list(orders.find().sort("order_date", -1))
+    return render_template('allorders.html', all_orders=all_orders)
+
+@app.route('/update_order_status/<order_id>', methods=['POST'])
+def update_order_status(order_id):
+    if 'name' not in session or session['name'] != 'admin':
+        return redirect(url_for('admin'))
+    
+    new_status = request.form.get('status')
+    if new_status not in ['pending', 'shipped', 'delivered', 'cancelled']:
+        return redirect(url_for('allorders'))
+    
+    # Get the current order
+    order = orders.find_one({"_id": ObjectId(order_id)})
+    if not order:
+        return redirect(url_for('allorders'))
+    
+    # If status is changing to delivered, update stock
+    if new_status == 'delivered' and order['status'] != 'delivered':
+        # Update stock for each book in the order
+        for item in order['order_items']:
+            # Decrease stock by the quantity ordered
+            stock.update_one(
+                {"_id": item['book_id']},
+                {"$inc": {"stock": -item['quantity']}}
+            )
+    
+    # If status was delivered and is being changed to cancelled, restore stock
+    elif new_status == 'cancelled' and order['status'] == 'delivered':
+        # Restore stock for each book in the order
+        for item in order['order_items']:
+            # Increase stock by the quantity that was delivered
+            stock.update_one(
+                {"_id": item['book_id']},
+                {"$inc": {"stock": item['quantity']}}
+            )
+    
+    # Update the order status
+    orders.update_one(
+        {"_id": ObjectId(order_id)},
+        {"$set": {"status": new_status}}
+    )
+    
+    return redirect(url_for('allorders'))
+
+@app.route('/payment/<order_id>')
+def payment(order_id):
+    if 'name' not in session:
+        return redirect(url_for('login'))
+    
+    order = orders.find_one({"_id": ObjectId(order_id)})
+    
+    if not order or order['user'] != session['name']:
+        return redirect(url_for('myorders'))
+    
+    if order['status'] != 'delivered':
+        return redirect(url_for('myorders'))
+    
+    # Update payment status
+    orders.update_one(
+        {"_id": ObjectId(order_id)},
+        {"$set": {'payment_status': 1}}
+    )
+    
+    return render_template('payment.html', order=order)
+
 if __name__=="__main__":
+    app.run(debug=True)
     app.run(debug=True)

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Orders - Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='section-bg.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(0, 0, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+        }
+        .navbar-brand {
+            padding: 0;
+            margin-right: 2rem;
+        }
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        .nav-btn {
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            color: #ffd700;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        .orders-container {
+            background: rgba(0, 0, 40, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        .order-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .order-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .order-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        .order-status {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        .status-shipped {
+            background: rgba(0, 123, 255, 0.2);
+            color: #0d6efd;
+            border: 1px solid rgba(0, 123, 255, 0.3);
+        }
+        .status-delivered {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+        .status-cancelled {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        .order-items {
+            margin-bottom: 15px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .item-details {
+            flex-grow: 1;
+        }
+        .item-title {
+            color: #ffd700;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .item-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        .order-total {
+            text-align: right;
+            font-size: 1.1rem;
+            color: #ffd700;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        .shipping-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        .shipping-info h6 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        .status-select {
+            background: rgba(0, 0, 40, 0.8);
+            color: white;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 5px 15px;
+            margin-right: 10px;
+            min-width: 150px;
+        }
+        .status-select option {
+            background: rgba(0, 0, 40, 0.95);
+            color: white;
+        }
+        .update-status-btn {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            padding: 8px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .update-status-btn:hover {
+            background: linear-gradient(45deg, #ffa500, #ffd700);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+        }
+        .update-status-btn i {
+            font-size: 1.1rem;
+        }
+        .update-status-btn[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(255, 215, 0, 0.1);
+        }
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 5px 15px;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            border-color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/admindashboard">
+                <img src="{{ url_for('static', filename='images/hero-banner.png') }}" alt="Admin Dashboard">
+            </a>
+            <div class="nav-links">
+                <a href="/admindashboard" class="nav-btn">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="/allbooks" class="nav-btn">
+                    <i class="bi bi-book"></i> Books
+                </a>
+                <a href="/add" class="nav-btn">
+                    <i class="bi bi-plus-circle"></i> Add Book
+                </a>
+                <a href="/logout" class="nav-btn">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="orders-container">
+            <h2 class="text-center mb-4">All Orders</h2>
+            
+            <!-- Status Filters -->
+            <div class="filters">
+                <button class="filter-btn active" data-status="all">All Orders</button>
+                <button class="filter-btn" data-status="pending">Pending</button>
+                <button class="filter-btn" data-status="shipped">Shipped</button>
+                <button class="filter-btn" data-status="delivered">Delivered</button>
+                <button class="filter-btn" data-status="cancelled">Cancelled</button>
+            </div>
+            
+            {% if all_orders %}
+                {% for order in all_orders %}
+                    <div class="order-card" data-order-status="{{ order.status }}">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <div class="order-date">
+                                    <i class="bi bi-calendar3"></i> {{ order.order_date.strftime('%B %d, %Y %I:%M %p') }}
+                                </div>
+                                <div class="d-flex gap-2 mt-2">
+                                    <div class="order-status status-{{ order.status }}">
+                                        {{ order.status.title() }}
+                                    </div>
+                                    <div class="order-status {% if order.payment_status == 1 %}status-success{% else %}status-pending{% endif %}">
+                                        {% if order.payment_status == 1 %}
+                                            <i class="bi bi-check-circle"></i> Paid
+                                        {% else %}
+                                            <i class="bi bi-clock"></i> Payment Pending
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="order-actions">
+                                {% if order.status != 'delivered' and order.status != 'cancelled' %}
+                                <form action="{{ url_for('update_order_status', order_id=order._id) }}" method="POST" class="d-flex align-items-center">
+                                    <select name="status" class="form-select status-select me-2">
+                                        <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+                                        <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+                                        <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+                                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+                                        <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                                    </select>
+                                    <button type="submit" class="update-status-btn">
+                                        <i class="bi bi-arrow-clockwise"></i> Update Status
+                                    </button>
+                                </form>
+                                {% else %}
+                                <div class="order-status status-{{ order.status }} ms-2">{{ order.status.title() }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="order-items">
+                            {% for item in order.order_items %}
+                                <div class="order-item">
+                                    <div class="item-details">
+                                        <div class="item-title">{{ item.title }}</div>
+                                        <div class="item-subtitle">
+                                            {{ item.author }} • {{ item.genre }}
+                                        </div>
+                                    </div>
+                                    <div class="item-quantity">
+                                        x{{ item.quantity }}
+                                    </div>
+                                    <div class="item-price ms-3">
+                                        ₹{{ item.subtotal }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="shipping-info">
+                            <h6><i class="bi bi-person"></i> Customer Details</h6>
+                            <p class="mb-1">Name: {{ order.user_details.username }}</p>
+                            <p class="mb-1">Email: {{ order.user_details.email }}</p>
+                            <p class="mb-1">Phone: {{ order.user_details.phone or 'Not provided' }}</p>
+                            <p class="mb-0">Address: {{ order.shipping_address or 'Not provided' }}</p>
+                        </div>
+                        
+                        <div class="order-total">
+                            Total: ₹{{ order.total_amount }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox fs-1 mb-3 d-block"></i>
+                    <h3>No Orders Found</h3>
+                    <p class="text-muted">There are no orders in the system yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Filter orders by status
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const orderCards = document.querySelectorAll('.order-card');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Add active class to clicked button
+                    button.classList.add('active');
+
+                    const status = button.dataset.status;
+                    
+                    orderCards.forEach(card => {
+                        if (status === 'all' || card.dataset.orderStatus === status) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

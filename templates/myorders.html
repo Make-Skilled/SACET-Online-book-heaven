@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='section-bg.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: rgba(0, 0, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+        }
+        .navbar-brand {
+            padding: 0;
+            margin-right: 2rem;
+        }
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        .nav-btn {
+            background-color: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-color: #ffd700;
+            color: #ffd700;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+        .orders-container {
+            background: rgba(0, 0, 40, 0.8);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        .order-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .order-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        .order-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        .order-status {
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        .status-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        .order-items {
+            margin-bottom: 15px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .item-details {
+            flex-grow: 1;
+        }
+        .item-title {
+            color: #ffd700;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .item-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        .order-total {
+            text-align: right;
+            font-size: 1.1rem;
+            color: #ffd700;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        .shipping-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        .shipping-info h6 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        .empty-orders {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .empty-orders i {
+            font-size: 4rem;
+            color: rgba(255, 215, 0, 0.3);
+            margin-bottom: 20px;
+        }
+        .btn-payment {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-payment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Navigation -->
+    <nav class="navbar">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="/userdashboard">
+                <img src="{{ url_for('static', filename='images/hero-banner.png') }}" alt="booken home">
+            </a>
+            <div class="nav-links">
+                <a href="/userdashboard" class="nav-btn">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+                <a href="/shop" class="nav-btn">
+                    <i class="bi bi-shop"></i> Shop
+                </a>
+                <a href="/cart" class="nav-btn">
+                    <i class="bi bi-cart"></i> Cart
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="orders-container">
+            <h2 class="text-center mb-4">My Orders</h2>
+            
+            {% if user_orders %}
+                {% for order in user_orders %}
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div class="order-date">
+                                <i class="bi bi-calendar3"></i> {{ order.order_date.strftime('%B %d, %Y %I:%M %p') }}
+                            </div>
+                            <div class="d-flex gap-2">
+                                <div class="order-status status-{{ order.status }}">
+                                    {{ order.status.title() }}
+                                </div>
+                                <div class="order-status {% if order.payment_status == 1 %}status-success{% else %}status-pending{% endif %}">
+                                    {% if order.payment_status == 1 %}
+                                        <i class="bi bi-check-circle"></i> Paid
+                                    {% else %}
+                                        <i class="bi bi-clock"></i> Payment Pending
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="order-items">
+                            {% for item in order.order_items %}
+                                <div class="order-item">
+                                    <div class="item-details">
+                                        <div class="item-title">{{ item.title }}</div>
+                                        <div class="item-subtitle">
+                                            {{ item.author }} • {{ item.genre }}
+                                        </div>
+                                    </div>
+                                    <div class="item-quantity">
+                                        x{{ item.quantity }}
+                                    </div>
+                                    <div class="item-price ms-3">
+                                        ₹{{ item.subtotal }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="shipping-info">
+                            <h6><i class="bi bi-truck"></i> Shipping Details</h6>
+                            <p class="mb-1">{{ order.user_details.username }}</p>
+                            <p class="mb-1">{{ order.shipping_address or 'Address not provided' }}</p>
+                            <p class="mb-0">Contact: {{ order.contact or 'Contact not provided' }}</p>
+                        </div>
+                        
+                        <div class="order-total">
+                            Total: ₹{{ order.total_amount }}
+                            {% if order.status == 'delivered' and order.payment_status == 0 %}
+                            <a href="{{ url_for('payment', order_id=order._id) }}" class="btn-payment">
+                                <i class="bi bi-credit-card"></i> Make Payment
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-orders">
+                    <i class="bi bi-bag-x"></i>
+                    <h3>No Orders Yet</h3>
+                    <p>Your order history will appear here</p>
+                    <a href="/shop" class="nav-btn mt-3">
+                        <i class="bi bi-shop"></i> Continue Shopping
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
