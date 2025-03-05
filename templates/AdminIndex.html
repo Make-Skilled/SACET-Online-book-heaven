@@ -50,7 +50,7 @@
     <div class="header-top">
       <div class="container">
 
-        <a href="/home" class="logo">
+        <a href="/admindashboard" class="logo">
           <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
         </a>
 
@@ -91,11 +91,7 @@
             </li>
 
             <li>
-              <a href="#" class="navbar-link">Blog</a>
-            </li>
-
-            <li>
-              <a href="#" class="navbar-link">Shop</a>
+              <a href="/allbooks" class="navbar-link">All books</a>
             </li>
 
             
@@ -260,59 +256,6 @@
       <!-- 
         - #FEATURED COLLECTION
       -->
-
-    
-      <section class="section featured" id="section featured" aria-label="featured collection">
-        <div class="container">
-
-          <h2 class="h2 section-title">Featured Collections</h2>
-
-          <p class="section-text">
-            Contrary to popular belief, Lorem Ipsum is not simply random.
-          </p>
-
-          <div style="width: 800px;height: 400px;margin-left: 60px;">
-            <ul class="grid-list">
-              {% for i in data %}
-              <li>
-                <div class="card" style="width: 18rem;">
-                  <img class="card-img-top" src="/img/{{i['image']}}/{{i['mimetype']}}" alt="Card image cap" style="height: 150px;width: 150px;">
-
-                  <div class="card-body">
-                    <table>
-                      <tr>
-                        <td style="margin: 20px;"><h3><b>Title:</b></h3></td>
-                        <td style="margin: 20px;"><h4 class="card-title">{{i['title']}}</h4></td>
-                      </tr>
-                      <tr>
-                        <td style="margin: 20px;"><h3><b>Author:</b></td>
-                          <td style="margin: 20px;"><h4>{{i['author']}}</h4></td>
-                      </tr>
-                      <tr>
-                        <td style="margin: 20px;"><h3><b>Genre:</b></h3></td>
-                        <td style="margin: 20px;"><h4>{{i['genre']}}</h4></td>
-                      </tr>
-                      <tr>
-                        <td style="margin: 20px;"><h3>Price:</h3></td>
-                        <td style="margin: 20px;"><h4>{{i['price']}}</h4></td>
-                      </tr>
-                    </table>                 
-                   <a href="/addtocart?id={{i['_id']}}" class="btn btn-primary">Add to cart</a>
-                  </div>
-                </div>
-                
-              </li>
-              {% endfor %}
-  
-  
-                </div>
-              </div>
-          </ul>
-  
-          </div>
-        </div>
-      </section>
-
 
 
 

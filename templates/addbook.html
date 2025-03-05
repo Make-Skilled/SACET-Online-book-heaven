@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 
+    - primary meta tags
+  -->
+  <title>Add New Book - Book Heaven</title>
+  <meta name="title" content="Add New Book - Book Heaven">
+  <meta name="description" content="Add new books to the Book Heaven collection">
+
+  <!-- 
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href={{ url_for('static', filename='css/style.css' )}}>
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Work+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- 
+    - preload images
+  -->
+  <link rel="preload" as="image" href={{ url_for("static", filename="images/hero-banner.png" )}}>
+  <link rel="preload" as="image" href={{ url_for("static", filename="images/hero-bg.jpg" )}}>
+
+</head>
+
+<body id="top">
+
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+    <div class="header-top">
+      <div class="container">
+
+        <a href="/home" class="logo">
+          <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+        </a>
+
+        <div class="input-wrapper">
+          <form action="/filter" method="get">
+            <input type="text" name="search" placeholder="Enter author,genre or title to filter" style="width: 650px;margin-right: 10px;padding: 6px;outline: white;">
+            <input type="submit" class="btn btn-primary" value="search" style="height: 40px;padding: 10px;width: 120px;margin-bottom: 20px;">
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="header-bottom" data-navbar>
+      <div class="container">
+
+        <nav class="navbar">
+
+          <button class="nav-close-btn" data-nav-toggler aria-label="close menu" title="Close Menu">
+            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+          </button>
+
+          <div class="navbar-top">
+            <input type="search" name="search" placeholder="Search our store" class="input-field">
+
+            <button class="search-btn" aria-label="Search">
+              <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+            </button>
+          </div>
+
+          <ul class="navbar-list">
+            <li>
+              <a href="/adminindex" class="navbar-link">Home</a>
+            </li>
+
+            <li>
+              <a href="/book" class="navbar-link">Add a Book</a>
+            </li>
+
+            <li>
+              <a href="/stock" class="navbar-link">Stock</a>
+            </li>
+
+            <li>
+              <a href="/logout" class="navbar-link">Logout</a>
+            </li>
+          </ul>
+
+        </nav>
+
+        <a href="tel:+0123456789" class="header-contact-link">
+          <ion-icon name="headset-outline" aria-hidden="true"></ion-icon>
+          <span class="span">(+91)-9876543210</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+  </header>
+
+  <main>
+    <article>
+      <section class="section add-book" aria-label="add book">
+        <div class="container">
+          <h2 class="h2 section-title">Add New Book</h2>
+          
+          <form action="/addbook" method="post" enctype="multipart/form-data" class="add-book-form">
+            <div class="form-group">
+              <label for="title">Book Title</label>
+              <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group">
+              <label for="author">Author</label>
+              <input type="text" id="author" name="author" required>
+            </div>
+
+            <div class="form-group">
+              <label for="genre">Genre</label>
+              <input type="text" id="genre" name="genre" required>
+            </div>
+
+            <div class="form-group">
+              <label for="price">Price</label>
+              <input type="number" id="price" name="price" required>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea id="description" name="description" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="image">Book Cover Image</label>
+              <input type="file" id="image" name="image" accept="image/*" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Book</button>
+          </form>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- 
+    - #BACK TO TOP
+  -->
+
+  <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  </a>
+
+  <!-- 
+    - custom js link
+  -->
+  <script src={{ url_for('static', filename='js/script.js' )}} defer></script>
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+</html> 

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 
+    - primary meta tags
+  -->
+  <title>Edit Book - Book Heaven</title>
+  <meta name="title" content="Edit Book - Book Heaven">
+  <meta name="description" content="Edit book details in Book Heaven collection">
+
+  <!-- 
+    - favicon
+  -->
+  <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
+
+  <!-- 
+    - custom css link
+  -->
+  <link rel="stylesheet" href={{ url_for('static', filename='css/style.css' )}}>
+
+  <!-- 
+    - google font link
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Work+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- 
+    - preload images
+  -->
+  <link rel="preload" as="image" href={{ url_for("static", filename="images/hero-banner.png" )}}>
+  <link rel="preload" as="image" href={{ url_for("static", filename="images/hero-bg.jpg" )}}>
+
+</head>
+
+<body id="top">
+
+  <!-- 
+    - #HEADER
+  -->
+
+  <header class="header" data-header>
+    <div class="header-top">
+      <div class="container">
+
+        <a href="/home" class="logo">
+          <img src={{ url_for( 'static', filename="images/hero-banner.png" ) }} width="48" height="28" alt="booken home">
+        </a>
+
+        <div class="input-wrapper">
+          <form action="/filter" method="get">
+            <input type="text" name="search" placeholder="Enter author,genre or title to filter" style="width: 650px;margin-right: 10px;padding: 6px;outline: white;">
+            <input type="submit" class="btn btn-primary" value="search" style="height: 40px;padding: 10px;width: 120px;margin-bottom: 20px;">
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="header-bottom" data-navbar>
+      <div class="container">
+
+        <nav class="navbar">
+
+          <button class="nav-close-btn" data-nav-toggler aria-label="close menu" title="Close Menu">
+            <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
+          </button>
+
+          <div class="navbar-top">
+            <input type="search" name="search" placeholder="Search our store" class="input-field">
+
+            <button class="search-btn" aria-label="Search">
+              <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+            </button>
+          </div>
+
+          <ul class="navbar-list">
+            <li>
+              <a href="/adminindex" class="navbar-link">Home</a>
+            </li>
+
+            <li>
+              <a href="/book" class="navbar-link">Add a Book</a>
+            </li>
+
+            <li>
+              <a href="/allbooks" class="navbar-link">All Books</a>
+            </li>
+
+            <li>
+              <a href="/stock" class="navbar-link">Stock</a>
+            </li>
+
+            <li>
+              <a href="/logout" class="navbar-link">Logout</a>
+            </li>
+          </ul>
+
+        </nav>
+
+        <a href="tel:+0123456789" class="header-contact-link">
+          <ion-icon name="headset-outline" aria-hidden="true"></ion-icon>
+          <span class="span">(+91)-9876543210</span>
+        </a>
+
+      </div>
+    </div>
+
+    <div class="overlay" data-overlay data-nav-toggler></div>
+  </header>
+
+  <main>
+    <article>
+      <section class="section edit-book" aria-label="edit book">
+        <div class="container">
+          <div class="section-header">
+            <h2 class="h2 section-title">Edit Book</h2>
+            <a href="/allbooks" class="btn btn-secondary">
+              <ion-icon name="arrow-back-outline"></ion-icon>
+              Back to All Books
+            </a>
+          </div>
+
+          <div class="edit-book-form">
+            <form action="/editbook/{{ book._id }}" method="POST" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="bookname">Book Title</label>
+                <input type="text" id="bookname" name="bookname" value="{{ book.title }}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" id="author" name="author" value="{{ book.author }}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="genre">Genre</label>
+                <input type="text" id="genre" name="genre" value="{{ book.genre }}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" name="price" value="{{ book.price }}" required>
+              </div>
+
+              <div class="form-group">
+                <label for="stock">Stock Count</label>
+                <input type="number" id="stock" name="stock" value="{{ book.stock }}" min="0" required>
+              </div>
+
+              <div class="form-group">
+                <label for="image">Book Cover Image</label>
+                <div class="current-image">
+                  <img src="{{ url_for('static', filename='uploads/' + book.image) }}" alt="Current book cover">
+                  <p>Current image: {{ book.image }}</p>
+                </div>
+                <input type="file" id="image" name="image" accept="image/*">
+                <p class="help-text">Leave empty to keep the current image</p>
+              </div>
+
+              <div class="form-group">
+                <label for="pdf">Book PDF</label>
+                <div class="current-pdf">
+                  <p>Current PDF: {{ book.pdf }}</p>
+                  <a href="{{ url_for('static', filename='uploads/' + book.pdf) }}" class="btn btn-sm btn-success" download>
+                    <ion-icon name="download-outline"></ion-icon>
+                    Download Current PDF
+                  </a>
+                </div>
+                <input type="file" id="pdf" name="pdf" accept="application/pdf">
+                <p class="help-text">Leave empty to keep the current PDF</p>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                  <ion-icon name="save-outline"></ion-icon>
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </article>
+  </main>
+
+  <!-- 
+    - #BACK TO TOP
+  -->
+
+  <a href="#top" class="back-top-btn" aria-label="back to top" data-back-top-btn>
+    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  </a>
+
+  <!-- 
+    - custom js link
+  -->
+  <script src={{ url_for('static', filename='js/script.js' )}} defer></script>
+
+  <!-- 
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <style>
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .edit-book-form {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--white);
+      font-weight: 500;
+      font-size: 1.2rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--granite-gray);
+      border-radius: 5px;
+      font-size: 1.1rem;
+      color: var(--white);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .current-image {
+      margin: 1rem 0;
+      text-align: center;
+    }
+
+    .current-image img {
+      max-width: 200px;
+      height: auto;
+      border-radius: 5px;
+      margin-bottom: 0.5rem;
+    }
+
+    .current-image p {
+      color: var(--white);
+      font-size: 1.1rem;
+    }
+
+    .help-text {
+      font-size: 1rem;
+      color: var(--white);
+      margin-top: 0.5rem;
+      opacity: 0.8;
+    }
+
+    .form-actions {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--granite-gray);
+      color: var(--white);
+      padding: 0.75rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .btn-secondary:hover {
+      background: var(--jet);
+    }
+
+    .section-title {
+      color: var(--white);
+      font-size: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .edit-book-form {
+        padding: 1rem;
+      }
+
+      .form-group label {
+        font-size: 1.1rem;
+      }
+
+      .form-group input {
+        font-size: 1rem;
+      }
+    }
+  </style>
+
+</body>
+
+</html> 

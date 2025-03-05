@@ -5,6 +5,7 @@ from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
 import os;
 import io
+import datetime
 
 database=MongoClient("mongodb+srv://kr4785543:1234567890@cluster0.220yz.mongodb.net/")
 users=database['users']
@@ -61,13 +62,19 @@ def adminlogin():
     password=request.form['pass']
 
     data=stock.find()
-    if(user=="admin" and password=="nimda"):
+    if(user=="admin" and password=="1234567890"):
         session['name']=user
-        return render_template('AdminIndex.html',data=data)
+        return redirect(url_for('admindashboard'))
     else:
         return render_template('Admin.html',status='User does not exist or wrong password')
 
-
+@app.route('/admindashboard')
+def admindashboard():
+    if 'name' not in session or session['name'] != 'admin':
+        return redirect(url_for('admin'))
+    
+    data = stock.find()
+    return render_template('adminindex.html', data=data)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -110,25 +117,7 @@ def userdashboard():
     else:
         count = 0
     
-    # Get all books from stock
-    data = list(stock.find())
-    
-    # Featured books (get from database if possible)
-    featured_books = []
-    for book in data:
-        if len(featured_books) < 4:  # Limit to 4 featured books
-            featured_books.append({
-                'title': book['title'],
-                'author': book['author'],
-                'genre': book['genre'],
-                'price': book['price'],
-                'image': book['image'],
-                'mimetype': book['mimetype'],
-                'description': book.get('description', 'A captivating book that will keep you engaged from start to finish.'),
-                '_id': book['_id']
-            })
-    
-    return render_template('index.html', data=data, count=count, featured_books=featured_books)
+    return render_template('index.html', count=count)
 
 @app.route('/cart')
 def cart():
@@ -256,22 +245,41 @@ def deff():
 
 @app.route('/addbook',methods=['post'])
 def book():
-    name=request.form['bookname']
-    author=request.form['author']
-    genre=request.form['genre']
-    price=request.form['price']
-    chooseFile=request.files['image']
-    doc=secure_filename(chooseFile.filename)
-    chooseFile.save(app.config['uploads']+'/'+doc)
-    di={}
-    di['title']=name
-    di['genre']=genre
-    di['author']=author 
-    di['price']=int(price)
-    di['image']=chooseFile.filename
-    di['mimetype'] = chooseFile.mimetype.split('/')[-1]
+    name = request.form['title']
+    author = request.form['author']
+    genre = request.form['genre']
+    price = request.form['price']
+    stock_count = request.form['stock']
+    image_file = request.files['image']
+    pdf_file = request.files['pdf']
+    
+    # Create static/uploads directory if it doesn't exist
+    upload_folder = os.path.join('static', 'uploads')
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
+    
+    # Generate timestamped filenames
+    timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    image_filename = f"{timestamp}_img_{secure_filename(image_file.filename)}"
+    pdf_filename = f"{timestamp}_pdf_{secure_filename(pdf_file.filename)}"
+    
+    # Save files with secure filenames
+    image_path = os.path.join(upload_folder, image_filename)
+    pdf_path = os.path.join(upload_folder, pdf_filename)
+    image_file.save(image_path)
+    pdf_file.save(pdf_path)
+    
+    di = {}
+    di['title'] = name
+    di['genre'] = genre
+    di['author'] = author 
+    di['price'] = int(price)
+    di['stock'] = int(stock_count)
+    di['image'] = image_filename
+    di['pdf'] = pdf_filename
+    di['mimetype'] = image_file.mimetype.split('/')[-1]
     stock.insert_one(di) 
-    return render_template('Book.html',status="book inserted")
+    return redirect(url_for('allbooks'))
 
 
 @app.route('/admin')
@@ -382,6 +390,154 @@ def send_message():
         # For now, we'll just redirect with a success message
         flash('Thank you for your message! We will get back to you soon.', 'success')
         return redirect(url_for('contact'))
+
+@app.route('/allbooks')
+def allbooks():
+    if 'name' not in session or session['name'] != 'admin':
+        return redirect(url_for('admin'))
+    
+    # Get all books from stock
+    all_books = list(stock.find())
+    
+    # Get unique genres
+    genres = sorted(list(set(book['genre'] for book in all_books)))
+    
+    # Get search query and filters
+    search_query = request.args.get('search', '').lower()
+    genre_filter = request.args.get('genre', '')
+    price_filter = request.args.get('price', '')
+    
+    # Apply filters
+    filtered_books = all_books
+    if search_query:
+        filtered_books = [
+            book for book in filtered_books 
+            if search_query in book['title'].lower() 
+            or search_query in book['author'].lower()
+            or search_query in book['genre'].lower()
+        ]
+    
+    if genre_filter:
+        filtered_books = [book for book in filtered_books if book['genre'] == genre_filter]
+    
+    if price_filter:
+        if price_filter == 'under500':
+            filtered_books = [book for book in filtered_books if book['price'] < 500]
+        elif price_filter == '500to1000':
+            filtered_books = [book for book in filtered_books if 500 <= book['price'] <= 1000]
+        elif price_filter == 'over1000':
+            filtered_books = [book for book in filtered_books if book['price'] > 1000]
+    
+    return render_template('allbooks.html', books=filtered_books, genres=genres)
+
+@app.route('/editbook/<book_id>', methods=['GET', 'POST'])
+def editbook(book_id):
+    if 'name' not in session or session['name'] != 'admin':
+        return redirect(url_for('admin'))
+    
+    if request.method == 'GET':
+        # Get book details for editing
+        book = stock.find_one({"_id": ObjectId(book_id)})
+        if not book:
+            return redirect(url_for('allbooks'))
+        return render_template('editbook.html', book=book)
+    
+    elif request.method == 'POST':
+        # Update book details
+        name = request.form['bookname']
+        author = request.form['author']
+        genre = request.form['genre']
+        price = request.form['price']
+        stock_count = request.form['stock']
+        
+        update_data = {
+            'title': name,
+            'author': author,
+            'genre': genre,
+            'price': int(price),
+            'stock': int(stock_count)
+        }
+        
+        # Handle image upload if a new image is provided
+        if 'image' in request.files:
+            image_file = request.files['image']
+            if image_file.filename:
+                # Generate timestamped filename
+                timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                image_filename = f"{timestamp}_img_{secure_filename(image_file.filename)}"
+                
+                # Create static/uploads directory if it doesn't exist
+                upload_folder = os.path.join('static', 'uploads')
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder)
+                
+                # Save file with secure filename
+                image_path = os.path.join(upload_folder, image_filename)
+                image_file.save(image_path)
+                
+                # Delete old image if it exists
+                old_book = stock.find_one({"_id": ObjectId(book_id)})
+                if old_book and 'image' in old_book:
+                    try:
+                        old_image_path = os.path.join(upload_folder, old_book['image'])
+                        if os.path.exists(old_image_path):
+                            os.remove(old_image_path)
+                    except:
+                        pass
+                
+                update_data['image'] = image_filename
+                update_data['mimetype'] = image_file.mimetype.split('/')[-1]
+        
+        # Handle PDF upload if a new PDF is provided
+        if 'pdf' in request.files:
+            pdf_file = request.files['pdf']
+            if pdf_file.filename:
+                # Generate timestamped filename
+                timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+                pdf_filename = f"{timestamp}_pdf_{secure_filename(pdf_file.filename)}"
+                
+                # Save file with secure filename
+                pdf_path = os.path.join(upload_folder, pdf_filename)
+                pdf_file.save(pdf_path)
+                
+                # Delete old PDF if it exists
+                old_book = stock.find_one({"_id": ObjectId(book_id)})
+                if old_book and 'pdf' in old_book:
+                    try:
+                        old_pdf_path = os.path.join(upload_folder, old_book['pdf'])
+                        if os.path.exists(old_pdf_path):
+                            os.remove(old_pdf_path)
+                    except:
+                        pass
+                
+                update_data['pdf'] = pdf_filename
+        
+        # Update the book in database
+        stock.update_one(
+            {"_id": ObjectId(book_id)},
+            {"$set": update_data}
+        )
+        
+        return redirect(url_for('allbooks'))
+
+@app.route('/deletebook/<book_id>')
+def deletebook(book_id):
+    if 'name' not in session or session['name'] != 'admin':
+        return redirect(url_for('admin'))
+    
+    # Get book details to delete the image file
+    book = stock.find_one({"_id": ObjectId(book_id)})
+    if book:
+        # Delete the image file from uploads directory
+        try:
+            os.remove(os.path.join(app.config['uploads'], book['image']))
+        except:
+            pass  # Ignore if file doesn't exist
+        
+        # Delete the book from database
+        stock.delete_one({"_id": ObjectId(book_id)})
+    
+    return redirect(url_for('allbooks'))
 
 if __name__=="__main__":
     app.run(debug=True)
