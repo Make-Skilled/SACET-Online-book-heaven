@@ -3,12 +3,11 @@ from pymongo import MongoClient
 from flask import Flask,render_template,session,request,redirect,send_file,url_for, flash
 from bson.objectid import ObjectId
 from werkzeug.utils import secure_filename
-import os;
+import os
 import io
-import datetime
 from datetime import datetime
 
-database=MongoClient("mongodb+srv://kr4785543:1234567890@cluster0.220yz.mongodb.net/")
+database=MongoClient("mongodb+srv://shaikfaraha:Farha17@cluster0.h4dnl.mongodb.net/")
 users=database['users']
 books=users['books'] 
 stock=users['stock']
@@ -20,7 +19,7 @@ app.secret_key='50000'
 app.config['uploads']="uploads"
 # session['flag']=0
 
-@app.route('/')
+@app.route('/') 
 def home():
     return render_template('Login.html')
 
@@ -769,5 +768,4 @@ def payment(order_id):
     return render_template('payment.html', order=order)
 
 if __name__=="__main__":
-    app.run(debug=True)
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0')
